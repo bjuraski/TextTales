@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using TextTales.Api.Data;
 using TextTales.Api.Extensions;
+using TextTales.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("TextTalesConnection"));
 });
+builder.Services.AddScoped<ApplicationDbContextFactory>();
+
+builder.Services.AddScoped<ICategoryRepositoryService, CategoryRepositoryService>();
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
