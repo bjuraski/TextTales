@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using TextTales.Api.Data;
+using TextTales.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TextTalesConnection"));
 });
 
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .WriteTo.Console()
+    .CreateLogger();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,6 +29,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();
