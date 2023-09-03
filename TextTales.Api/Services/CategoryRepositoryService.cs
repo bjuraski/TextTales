@@ -23,4 +23,16 @@ public class CategoryRepositoryService : ICategoryRepositoryService
 
         return categories;
     }
+
+    public async Task<Category?> GetCategoryByIdAsync(long id)
+    {
+        await using var dbContext = _dbContextFactory.CreateDbContext();
+
+        var category = await dbContext
+            .Categories
+            .Where(c => c.Id == id)
+            .SingleOrDefaultAsync();
+
+        return category;
+    }
 }
