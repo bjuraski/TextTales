@@ -2,10 +2,12 @@
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace TextTales.Api.Migrations;
 
 /// <inheritdoc />
-public partial class InitialCreate : Migration
+public partial class InitialCreateAndDbSeed : Migration
 {
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,6 +24,16 @@ public partial class InitialCreate : Migration
             constraints: table =>
             {
                 table.PrimaryKey("PK_Categories", x => x.Id);
+            });
+
+        migrationBuilder.InsertData(
+            table: "Categories",
+            columns: new[] { "Id", "DisplayOrder", "Name" },
+            values: new object[,]
+            {
+                { 1L, 1, "Thriller" },
+                { 2L, 2, "Romance" },
+                { 3L, 3, "Horror" }
             });
     }
 

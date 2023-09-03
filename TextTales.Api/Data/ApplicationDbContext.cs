@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TextTales.Api.Entities;
+using TextTales.Models;
 
 namespace TextTales.Api.Data;
 

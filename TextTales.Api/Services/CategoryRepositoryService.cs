@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TextTales.Api.Data;
-using TextTales.Api.Entities;
+using TextTales.Models;
 
 namespace TextTales.Api.Services;
 

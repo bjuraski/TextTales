@@ -11,8 +11,8 @@ using TextTales.Api.Data;
 namespace TextTales.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230901162906_SeedCategoryTable")]
-    partial class SeedCategoryTable
+    [Migration("20230903121559_InitialCreateAndDbSeed")]
+    partial class InitialCreateAndDbSeed
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,7 +24,7 @@ namespace TextTales.Api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("TextTales.Api.Entities.Category", b =>
+            modelBuilder.Entity("TextTales.Models.Category", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()

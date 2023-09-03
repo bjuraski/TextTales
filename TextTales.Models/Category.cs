@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TextTales.Api.Entities;
+namespace TextTales.Models;
 
 public class Category
 {

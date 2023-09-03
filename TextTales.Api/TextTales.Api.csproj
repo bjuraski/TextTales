@@ -31,4 +31,8 @@
     <None Include="D:\Development\Projects\TextTales\TextTales.Api\.editorconfig" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TextTales.Models\TextTales.Models.csproj" />
+  </ItemGroup>
+
 </Project>
