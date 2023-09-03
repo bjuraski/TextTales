@@ -1,0 +1,39 @@
+﻿@using TextTales.Models;
+@using TextTales.Web.Interfaces;
+
+@page "/fetchdata"
+
+@inject ICategoryService CategoryService
+
+@if (Categories is not null)
+{
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Display Order</th>
+        </tr>
+        @foreach (var category in Categories)
+        {
+            <tr>
+                <td>@category.Id</td>
+                <td>@category.Name</td>
+                <td>@category.DisplayOrder</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <p>Waiting for data...</p>
+}
+
+
+@code {
+    private IEnumerable<Category>? Categories { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Categories = await CategoryService.GetCategories();
+    }
+}

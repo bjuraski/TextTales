@@ -1,4 +1,6 @@
 using Radzen;
+using TextTales.Web.Interfaces;
+using TextTales.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,11 @@ builder.Services.AddScoped<ContextMenuService>();
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();
+
+builder.Services.AddHttpClient<ICategoryService, CategoryService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7065/");
+});
 
 var app = builder.Build();
 
