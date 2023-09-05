@@ -23,6 +23,18 @@
         <RadzenDataGridColumn TItem="Category" Property="Id" Title="Id" />
         <RadzenDataGridColumn TItem="Category" Property="Name" Title="Name" />
         <RadzenDataGridColumn TItem="Category" Property="DisplayOrder" Title="Display Order" />
+        <RadzenDataGridColumn TItem="Category" Context="category" Filterable="false" Sortable="false">
+            <Template Context="category">
+                <RadzenRow Gap="1rem">
+                    <RadzenColumn Size="6">
+                        <RadzenButton Click="() => EditCategoryHandler(category.Id)" Text="Edit" Icon="edit" ButtonStyle="ButtonStyle.Dark" Style="width: 100%" />
+                    </RadzenColumn>
+                    @* <RadzenColumn Size="6">
+                        <RadzenButton Click="() => DeleteCategoryHandler(category.Id)" Text="Delete" Icon="delete" ButtonStyle="ButtonStyle.Danger" Style="width: 100%" />
+                    </RadzenColumn> *@
+                </RadzenRow>
+            </Template>
+        </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
 
@@ -44,4 +56,14 @@
     {
         NavigationManager.NavigateTo(Endpoints.Category.AddUrl);
     }
+
+    private void EditCategoryHandler(long id)
+    {
+        NavigationManager.NavigateTo(Endpoints.Category.SetEditUrl(id));
+    }
+
+    // private async Task DeleteCategoryHandler(long categoryId)
+    // {
+        
+    // }
 }

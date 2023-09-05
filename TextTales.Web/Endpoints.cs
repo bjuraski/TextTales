@@ -6,5 +6,7 @@ public static class Endpoints
     {
         public const string BaseUrl = "/categories";
         public const string AddUrl = $"{BaseUrl}/add";
+        public const string EditUrl = BaseUrl + "/edit/{id:long}";
+        public static string SetEditUrl(long id) => $"{BaseUrl}/edit/{id}";
     }
 }

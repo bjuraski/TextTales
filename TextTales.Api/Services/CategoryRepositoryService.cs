@@ -25,6 +25,40 @@ public class CategoryRepositoryService : ICategoryRepositoryService
         return categories;
     }
 
+    public async Task<Category> InsertCategoryAsync(Category category)
+    {
+        await using var dbContext = _dbContextFactory.CreateDbContext();
+
+        var result = await dbContext
+            .Categories
+            .AddAsync(category);
+
+        await dbContext.SaveChangesAsync();
+
+        return result.Entity;
+    }
+
+    public async Task<Category?> UpdateCategoryAsync(Category category)
+    {
+        var categoryToUpdate = await GetCategoryByIdAsync(category.Id);
+
+        if (categoryToUpdate is null)
+        {
+            return null;
+        }
+
+        await using var dbContext = _dbContextFactory.CreateDbContext();
+
+        categoryToUpdate.Name = category.Name;
+        categoryToUpdate.DisplayOrder = category.DisplayOrder;
+
+        dbContext.Categories.Update(categoryToUpdate);
+
+        await dbContext.SaveChangesAsync();
+
+        return categoryToUpdate;
+    }
+
     public async Task<Category?> GetCategoryByIdAsync(long id)
     {
         await using var dbContext = _dbContextFactory.CreateDbContext();
@@ -37,16 +71,26 @@ public class CategoryRepositoryService : ICategoryRepositoryService
         return category;
     }
 
-    public async Task<Category> InsertCategory(Category category)
+    public async Task<bool> ValidateCategoryName(string name)
     {
         await using var dbContext = _dbContextFactory.CreateDbContext();
 
-        var result = await dbContext
+        var nameExists = await dbContext
             .Categories
-            .AddAsync(category);
+            .AnyAsync(c => c.Name == name);
 
-        await dbContext.SaveChangesAsync();
+        return !nameExists;
 
-        return result.Entity;
+    }
+
+    public async Task<bool> ValidateCategoryDisplayOrder(int displayOrder)
+    {
+        await using var dbContext = _dbContextFactory.CreateDbContext();
+
+        var displayOrderExists = await dbContext
+            .Categories
+            .AnyAsync(c => c.DisplayOrder == displayOrder);
+
+        return !displayOrderExists;
     }
 }

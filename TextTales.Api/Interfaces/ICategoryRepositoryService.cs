@@ -8,5 +8,11 @@ public interface ICategoryRepositoryService
 
     Task<Category?> GetCategoryByIdAsync(long id);
 
-    Task<Category> InsertCategory(Category category);
+    Task<Category> InsertCategoryAsync(Category category);
+
+    Task<Category?> UpdateCategoryAsync(Category category);
+
+    Task<bool> ValidateCategoryName(string name);
+
+    Task<bool> ValidateCategoryDisplayOrder(int displayOrder);
 }
