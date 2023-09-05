@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TextTales.Api.Services;
+using TextTales.Api.Interfaces;
 using TextTales.Models;
 
 namespace TextTales.Api.Controllers;

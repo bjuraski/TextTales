@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using TextTales.Api.Data;
 using TextTales.Api.Extensions;
+using TextTales.Api.Interfaces;
 using TextTales.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);

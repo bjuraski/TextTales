@@ -1,39 +1,47 @@
 ﻿@using TextTales.Models;
 @using TextTales.Web.Interfaces;
 
-@page "/fetchdata"
+@attribute [Route(Endpoints.Category.BaseUrl)]
 
 @inject ICategoryService CategoryService
+@inject NavigationManager NavigationManager
 
-@if (Categories is not null)
-{
-    <table>
-        <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Display Order</th>
-        </tr>
-        @foreach (var category in Categories)
-        {
-            <tr>
-                <td>@category.Id</td>
-                <td>@category.Name</td>
-                <td>@category.DisplayOrder</td>
-            </tr>
-        }
-    </table>
-}
-else
-{
-    <p>Waiting for data...</p>
-}
+<PageTitle>Categories</PageTitle>
+<RadzenRow>
+    <RadzenColumn Size="10">
+        <h2>Categories</h2>
+    </RadzenColumn>
+    <RadzenColumn Size="2" Style="text-align: end">
+        <RadzenButton Click="NewCategoryHandler" Text="New" Icon="add_circle_outline" ButtonStyle="ButtonStyle.Primary" />
+    </RadzenColumn>
+</RadzenRow>
 
+<RadzenDataGrid TItem="Category" Data="@Categories" IsLoading="@_isLoading" AllowFiltering="true" AllowColumnResize="true" 
+                AllowAlternatingRows="false" AllowSorting="true" FilterMode="FilterMode.SimpleWithMenu" ColumnWidth="300px"
+                LogicalFilterOperator="LogicalFilterOperator.And" SelectionMode="DataGridSelectionMode.Single" @bind-Value=@SelectedCategories>
+    <Columns>
+        <RadzenDataGridColumn TItem="Category" Property="Id" Title="Id" />
+        <RadzenDataGridColumn TItem="Category" Property="Name" Title="Name" />
+        <RadzenDataGridColumn TItem="Category" Property="DisplayOrder" Title="Display Order" />
+    </Columns>
+</RadzenDataGrid>
 
 @code {
     private IEnumerable<Category>? Categories { get; set; }
 
+    private IList<Category> SelectedCategories { get; set; } = new List<Category>();
+
+    private bool _isLoading = false;
+
     protected override async Task OnInitializedAsync()
     {
+        _isLoading = true;
         Categories = await CategoryService.GetCategories();
+        _isLoading = false;
+    }
+
+    private void NewCategoryHandler()
+    {
+        NavigationManager.NavigateTo(Endpoints.Category.AddUrl);
     }
 }

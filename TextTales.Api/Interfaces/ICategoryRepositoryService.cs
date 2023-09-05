@@ -1,6 +1,6 @@
 ﻿using TextTales.Models;
 
-namespace TextTales.Api.Services;
+namespace TextTales.Api.Interfaces;
 
 public interface ICategoryRepositoryService
 {
