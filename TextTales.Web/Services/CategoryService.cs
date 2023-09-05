@@ -25,4 +25,11 @@ public class CategoryService : ICategoryService
 
         return category;
     }
+
+    public async Task<bool> CreateCategory(Category category)
+    {
+        var response = await _httpClient.PostAsJsonAsync("api/categories", category);
+
+        return response.IsSuccessStatusCode;
+    }
 }

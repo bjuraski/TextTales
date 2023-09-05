@@ -36,4 +36,17 @@ public class CategoryRepositoryService : ICategoryRepositoryService
 
         return category;
     }
+
+    public async Task<Category> InsertCategory(Category category)
+    {
+        await using var dbContext = _dbContextFactory.CreateDbContext();
+
+        var result = await dbContext
+            .Categories
+            .AddAsync(category);
+
+        await dbContext.SaveChangesAsync();
+
+        return result.Entity;
+    }
 }

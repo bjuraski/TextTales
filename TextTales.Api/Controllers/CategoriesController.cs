@@ -49,4 +49,24 @@ public class CategoriesController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, $"Error occured while retrieving data from database: {ex.Message}");
         }
     }
+
+    [HttpPost]
+    public async Task<ActionResult<Category>> CreateCategory([FromBody] Category category)
+    {
+        try
+        {
+            if (category is null)
+            {
+                return BadRequest();
+            }
+
+            var createdCategory = await _categoryRepositoryService.InsertCategory(category);
+
+            return CreatedAtAction(nameof(GetCategory), new { createdCategory.Id }, createdCategory);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, $"Error occured while inserting new category record in database: {ex.Message}");
+        }
+    }
 }

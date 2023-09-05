@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextTales.Web", "TextTales.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextTales.Api", "TextTales.Api\TextTales.Api.csproj", "{CE21C5EF-0603-4FDF-A535-BE9DACC6C0A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextTales.Models", "TextTales.Models\TextTales.Models.csproj", "{E855EC33-5796-4817-B7D2-83C311F6B708}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextTales.Models", "TextTales.Models\TextTales.Models.csproj", "{E855EC33-5796-4817-B7D2-83C311F6B708}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
