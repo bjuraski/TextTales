@@ -87,7 +87,7 @@ public class CategoriesController : ControllerBase
                 return NotFound($"Category with Id = {id} not found");
             }
 
-            return updatedCategory;
+            return Ok(updatedCategory);
         }
         catch (Exception ex)
         {
@@ -95,8 +95,33 @@ public class CategoriesController : ControllerBase
         }
     }
 
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<Category>> DeleteCategory(long id)
+    {
+        if (id == default)
+        {
+            return BadRequest("Category Id can't be default value");
+        }
+
+        try
+        {
+            var deletedCategory = await _categoryRepositoryService.DeleteCategoryAsync(id);
+
+            if (deletedCategory is null)
+            {
+                return NotFound($"Category with Id = {id} not found");
+            }
+
+            return Ok(deletedCategory);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, $"Error occured while deleting category record from database: {ex.Message}");
+        }
+    }
+
     [HttpGet("validate-name")]
-    public async Task<ActionResult<bool>> ValidateCategoryName([FromQuery] string? name)
+    public async Task<ActionResult<bool>> ValidateCategoryName([FromQuery] long? id, [FromQuery] string? name)
     {
         try
         {
@@ -105,7 +130,7 @@ public class CategoriesController : ControllerBase
                 return Ok(true);
             }
 
-            var isNameValid = await _categoryRepositoryService.ValidateCategoryName(name);
+            var isNameValid = await _categoryRepositoryService.ValidateCategoryName(id, name);
 
             return Ok(isNameValid);
         }
@@ -116,7 +141,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet("validate-display-order")]
-    public async Task<ActionResult<bool>> ValidateCategoryDisplayOrder([FromQuery] int displayOrder)
+    public async Task<ActionResult<bool>> ValidateCategoryDisplayOrder([FromQuery] long? id, [FromQuery] int displayOrder)
     {
         try
         {
@@ -125,7 +150,7 @@ public class CategoriesController : ControllerBase
                 return Ok(true);
             }
 
-            var isDisplayOrderValid = await _categoryRepositoryService.ValidateCategoryDisplayOrder(displayOrder);
+            var isDisplayOrderValid = await _categoryRepositoryService.ValidateCategoryDisplayOrder(id, displayOrder);
 
             return Ok(isDisplayOrderValid);
         }

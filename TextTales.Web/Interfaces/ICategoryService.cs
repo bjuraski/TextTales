@@ -12,7 +12,9 @@ public interface ICategoryService
 
     Task<bool> UpdateCategory(long id, Category category);
 
-    bool ValidateCategoryName(string name);
+    Task<bool> DeleteCategory(long id);
 
-    bool ValidateCategoryDisplayOrder(int displayOrder);
+    bool ValidateCategoryName(long? id, string name);
+
+    bool ValidateCategoryDisplayOrder(long? id, int displayOrder);
 }

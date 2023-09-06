@@ -59,6 +59,26 @@ public class CategoryRepositoryService : ICategoryRepositoryService
         return categoryToUpdate;
     }
 
+    public async Task<Category?> DeleteCategoryAsync(long id)
+    {
+        var categoryToDelete = await GetCategoryByIdAsync(id);
+
+        if (categoryToDelete is null)
+        {
+            return null;
+        }
+
+        await using var dbContext = _dbContextFactory.CreateDbContext();
+
+        var result = dbContext
+            .Categories
+            .Remove(categoryToDelete);
+
+        await dbContext.SaveChangesAsync();
+
+        return result.Entity;
+    }
+
     public async Task<Category?> GetCategoryByIdAsync(long id)
     {
         await using var dbContext = _dbContextFactory.CreateDbContext();
@@ -71,25 +91,25 @@ public class CategoryRepositoryService : ICategoryRepositoryService
         return category;
     }
 
-    public async Task<bool> ValidateCategoryName(string name)
+    public async Task<bool> ValidateCategoryName(long? id, string name)
     {
         await using var dbContext = _dbContextFactory.CreateDbContext();
 
         var nameExists = await dbContext
             .Categories
-            .AnyAsync(c => c.Name == name);
+            .AnyAsync(c => (!id.HasValue || c.Id != id) && c.Name == name);
 
         return !nameExists;
 
     }
 
-    public async Task<bool> ValidateCategoryDisplayOrder(int displayOrder)
+    public async Task<bool> ValidateCategoryDisplayOrder(long? id, int displayOrder)
     {
         await using var dbContext = _dbContextFactory.CreateDbContext();
 
         var displayOrderExists = await dbContext
             .Categories
-            .AnyAsync(c => c.DisplayOrder == displayOrder);
+            .AnyAsync(c => (!id.HasValue || c.Id != id) && c.DisplayOrder == displayOrder);
 
         return !displayOrderExists;
     }

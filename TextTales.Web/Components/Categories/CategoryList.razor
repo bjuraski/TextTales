@@ -5,6 +5,8 @@
 
 @inject ICategoryService CategoryService
 @inject NavigationManager NavigationManager
+@inject DialogService DialogService
+@inject NotificationService NotificationService
 
 <PageTitle>Categories</PageTitle>
 <RadzenRow>
@@ -29,9 +31,9 @@
                     <RadzenColumn Size="6">
                         <RadzenButton Click="() => EditCategoryHandler(category.Id)" Text="Edit" Icon="edit" ButtonStyle="ButtonStyle.Dark" Style="width: 100%" />
                     </RadzenColumn>
-                    @* <RadzenColumn Size="6">
+                    <RadzenColumn Size="6">
                         <RadzenButton Click="() => DeleteCategoryHandler(category.Id)" Text="Delete" Icon="delete" ButtonStyle="ButtonStyle.Danger" Style="width: 100%" />
-                    </RadzenColumn> *@
+                    </RadzenColumn>
                 </RadzenRow>
             </Template>
         </RadzenDataGridColumn>
@@ -57,13 +59,33 @@
         NavigationManager.NavigateTo(Endpoints.Category.AddUrl);
     }
 
-    private void EditCategoryHandler(long id)
+    private void EditCategoryHandler(long categoryId)
     {
-        NavigationManager.NavigateTo(Endpoints.Category.SetEditUrl(id));
+        NavigationManager.NavigateTo(Endpoints.Category.SetEditUrl(categoryId));
     }
 
-    // private async Task DeleteCategoryHandler(long categoryId)
-    // {
-        
-    // }
+    private async Task DeleteCategoryHandler(long categoryId)
+    {
+        var dialogResult = await DialogService.Confirm(
+            "Do you really want to delete the category?",
+            "Delete Category",
+            new ConfirmOptions { OkButtonText = "Yes", CancelButtonText = "No", ShowClose = false });
+
+        if (dialogResult.HasValue && dialogResult.Value == false)
+        {
+            return;
+        }
+
+        var isDeleted = await CategoryService.DeleteCategory(categoryId);
+
+        if (isDeleted)
+        {
+            NavigationManager.NavigateTo(Endpoints.Category.BaseUrl, true);
+            NotificationService.Notify(NotificationSeverity.Success, "Success", "Category deleted successfully!");
+        }
+        else
+        {
+            NotificationService.Notify(NotificationSeverity.Error, "Error", "Category can't be deleted!");
+        }
+    }
 }

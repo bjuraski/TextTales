@@ -12,7 +12,9 @@ public interface ICategoryRepositoryService
 
     Task<Category?> UpdateCategoryAsync(Category category);
 
-    Task<bool> ValidateCategoryName(string name);
+    Task<Category?> DeleteCategoryAsync(long id);
 
-    Task<bool> ValidateCategoryDisplayOrder(int displayOrder);
+    Task<bool> ValidateCategoryName(long? id, string name);
+
+    Task<bool> ValidateCategoryDisplayOrder(long? id, int displayOrder);
 }

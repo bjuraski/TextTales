@@ -40,17 +40,24 @@ public class CategoryService : ICategoryService
         return response.IsSuccessStatusCode;
     }
 
-    public bool ValidateCategoryName(string name)
+    public async Task<bool> DeleteCategory(long id)
     {
-        var response = Task.Run(async () => await _httpClient.GetFromJsonAsync<bool>($"api/categories/validate-name?name={name}"));
+        var response = await _httpClient.DeleteFromJsonAsync<Category>($"api/categories/{id}");
+
+        return response is not null;
+    }
+
+    public bool ValidateCategoryName(long? id, string name)
+    {
+        var response = Task.Run(async () => await _httpClient.GetFromJsonAsync<bool>($"api/categories/validate-name?id={id}&name={name}"));
         var result = response.GetAwaiter().GetResult();
 
         return result;
     }
 
-    public bool ValidateCategoryDisplayOrder(int displayOrder)
+    public bool ValidateCategoryDisplayOrder(long? id, int displayOrder)
     {
-        var response = Task.Run(async () => await _httpClient.GetFromJsonAsync<bool>($"api/categories/validate-display-order?displayOrder={displayOrder}"));
+        var response = Task.Run(async () => await _httpClient.GetFromJsonAsync<bool>($"api/categories/validate-display-order?id={id}&displayOrder={displayOrder}"));
         var result = response.GetAwaiter().GetResult();
 
         return result;
