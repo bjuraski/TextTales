@@ -97,7 +97,7 @@ public class CategoryRepositoryService : ICategoryRepositoryService
 
         var nameExists = await dbContext
             .Categories
-            .AnyAsync(c => (!id.HasValue || c.Id != id) && c.Name == name);
+            .AnyAsync(c => (!id.HasValue || c.Id != id) && c.Name.ToLower() == name.ToLower());
 
         return !nameExists;
 

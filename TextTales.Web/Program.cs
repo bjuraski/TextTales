@@ -17,6 +17,10 @@ builder.Services.AddHttpClient<ICategoryService, CategoryService>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7065/");
 });
+builder.Services.AddHttpClient<IValidateFieldService, ValidateFieldService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7065/");
+});
 
 var app = builder.Build();
 

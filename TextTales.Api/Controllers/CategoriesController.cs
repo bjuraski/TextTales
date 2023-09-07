@@ -141,7 +141,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet("validate-display-order")]
-    public async Task<ActionResult<bool>> ValidateCategoryDisplayOrder([FromQuery] long? id, [FromQuery] int displayOrder)
+    public async Task<ActionResult<bool>> ValidateCategoryDisplayOrder([FromQuery] long? id, [FromQuery(Name = "display-order")] int displayOrder)
     {
         try
         {

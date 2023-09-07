@@ -3,14 +3,16 @@ using TextTales.Web.Interfaces;
 
 namespace TextTales.Web.Services;
 
-public class CategoryService : ICategoryService
+public class CategoryService : ValidateFieldService, ICategoryService
 {
     private readonly HttpClient _httpClient;
 
-    public CategoryService(HttpClient httpClient)
+    public CategoryService(HttpClient httpClient) : base(httpClient)
     {
         _httpClient = httpClient;
     }
+
+    public override string ControllerName { get; } = "Categories";
 
     public async Task<IEnumerable<Category>?> GetCategories()
     {
@@ -45,21 +47,5 @@ public class CategoryService : ICategoryService
         var response = await _httpClient.DeleteFromJsonAsync<Category>($"api/categories/{id}");
 
         return response is not null;
-    }
-
-    public bool ValidateCategoryName(long? id, string name)
-    {
-        var response = Task.Run(async () => await _httpClient.GetFromJsonAsync<bool>($"api/categories/validate-name?id={id}&name={name}"));
-        var result = response.GetAwaiter().GetResult();
-
-        return result;
-    }
-
-    public bool ValidateCategoryDisplayOrder(long? id, int displayOrder)
-    {
-        var response = Task.Run(async () => await _httpClient.GetFromJsonAsync<bool>($"api/categories/validate-display-order?id={id}&displayOrder={displayOrder}"));
-        var result = response.GetAwaiter().GetResult();
-
-        return result;
     }
 }

@@ -21,7 +21,7 @@
                 <RadzenLabel Text="Name" />
                 <RadzenTextBox Name="Name" @bind-Value="Model.Name" class="form-control" />
                 <RadzenRequiredValidator Component="Name" Text="The Name field is required." Style="position: absolute; font-weight: bold;" />
-                <RadzenCustomValidator Component="Name" Validator="() => CategoryService.ValidateCategoryName(null, Model.Name)"
+                <RadzenCustomValidator Component="Name" Validator="() => CategoryService.ValidateField(null, Model.Name, nameof(Model.Name))"
                                        Text="The Name field already exists." Style="position: absolute; font-weight: bold;" />
             </div>
             <div class="form-group mb-3 w-50">
@@ -29,7 +29,7 @@
                 <RadzenNumeric Name="DisplayOrder" @bind-Value="Model.DisplayOrder" class="form-control" />
                 <RadzenNumericRangeValidator Component="DisplayOrder" Min="1" Max="50" Text="The Display Order field should be between 1 and 50."
                                              Style="display: block; position: absolute; font-weight: bold;" />
-                <RadzenCustomValidator Component="DisplayOrder" Validator="() => CategoryService.ValidateCategoryDisplayOrder(null, Model.DisplayOrder)"
+                <RadzenCustomValidator Component="DisplayOrder" Validator="() => CategoryService.ValidateField(null, Model.DisplayOrder, nameof(Model.DisplayOrder))"
                                        Text="The Display Order field already exists." 
                                        Style="display: block; position: absolute; font-weight: bold;" />
             </div>
