@@ -21,6 +21,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<ApplicationDbContextFactory>();
 
 builder.Services.AddScoped<ICategoryRepositoryService, CategoryRepositoryService>();
+builder.Services.AddScoped<IProductRepositoryService, ProductRepositoryService>();
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
