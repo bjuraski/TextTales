@@ -9,4 +9,12 @@ public static class Endpoints
         public const string EditUrl = BaseUrl + "/edit/{id:long}";
         public static string SetEditUrl(long id) => $"{BaseUrl}/edit/{id}";
     }
+
+    public static class Product
+    {
+        public const string BaseUrl = "/products";
+        public const string AddUrl = $"{BaseUrl}/add";
+        public const string EditUrl = BaseUrl + "/edit/{id:long}";
+        public static string SetEditUrl(long id) => $"{BaseUrl}/edit/{id}";
+    }
 }

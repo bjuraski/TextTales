@@ -66,3 +66,15 @@
         overflow-y: auto;
     }
 }
+
+.dropdown-color {
+    background-color: rgba(74, 70, 121, 1);
+}
+
+::deep .dropdown-toggle {
+    cursor: pointer;
+}
+
+::deep .dropdown-toggle::after {
+    margin-left: .5rem;
+}
