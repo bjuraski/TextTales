@@ -24,4 +24,6 @@ public class Product
     [Required]
     [Range(1, 500)]
     public decimal Price { get; set; }
+
+    public string? Image { get; set; }
 }

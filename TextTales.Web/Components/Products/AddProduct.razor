@@ -5,6 +5,7 @@
 @attribute [Route(Endpoints.Product.AddUrl)]
 
 @inject IProductService ProductService
+@inject IWebHostEnvironment WebHostEnvironment
 @inject NavigationManager NavigationManager
 @inject NotificationService NotificationService
 
@@ -47,6 +48,14 @@
                 <RadzenNumericRangeValidator Component="Price" Min="1" Max="500" Text="The Price field should be between 1 and 500 €."
                                              Style="display: block; position: absolute; font-weight: bold;" />
             </div>
+            <div class="form-group mb-3 w-50">
+                <RadzenLabel Text="Image" />
+                <InputFile OnChange="LoadImage" accept="image/*" class="form-control" />
+                @if (!string.IsNullOrEmpty(_uploadedImage))
+                {
+                    <RadzenImage Path="@_uploadedImage" class="mt-2 img-thumbnail" />
+                }
+            </div>
         </RadzenStack>
         <div class="mt-3">
             <RadzenRow JustifyContent="JustifyContent.Start" AlignItems="AlignItems.Center" Gap="2rem">
@@ -67,8 +76,19 @@
 
     private string _alertText = string.Empty;
 
+    private IBrowserFile? _file;
+
+    private string _uploadedImage = string.Empty;
+
     private async Task SubmitHandler()
     {
+        if (_file is not null)
+        {
+            var fileName = await SaveImage(_file);
+
+            Model.Image = fileName;
+        }
+
         var isCreated = await ProductService.CreateProduct(Model);
 
         if (!isCreated)
@@ -99,5 +119,61 @@
         _isVisible = false;
 
         await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task LoadImage(InputFileChangeEventArgs args)
+    {
+        var file = args.File;
+
+        if (file != null)
+        {
+            const int maxFileSize = 10 * 1024 * 1024; // 10MB
+
+            if (file.Size <= maxFileSize)
+            {
+                _file = file;
+
+                // Read the file content
+                using var stream = file.OpenReadStream(maxFileSize);
+                using var memoryStream = new MemoryStream();
+                await stream.CopyToAsync(memoryStream);
+
+                // Convert the image bytes to base64 string
+                var imageBytes = memoryStream.ToArray();
+                var base64Image = $"data:{file.ContentType};base64,{Convert.ToBase64String(imageBytes)}";
+
+                Model.Image = _uploadedImage = base64Image;
+            }
+        }
+    }
+
+    private async Task<string?> SaveImage(IBrowserFile file)
+    {
+        var wwwRootPath = WebHostEnvironment.WebRootPath;
+        var productPath = Path.Combine(wwwRootPath, @"images\product");
+
+        if (!Directory.Exists(productPath))
+        {
+            try
+            {
+                Directory.CreateDirectory(productPath);
+            }
+            catch (Exception ex)
+            {
+                await DisplayError($"Failed to create the directory: {ex.Message}");
+
+                return null;
+            }
+        }
+
+        var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.Name)}";
+        var filePath = Path.Combine(productPath, fileName);
+
+        using var stream = file.OpenReadStream();
+        using var fileStream = new FileStream(filePath, FileMode.Create);
+
+        await stream.CopyToAsync(fileStream);
+
+        return fileName;
     }
 }
