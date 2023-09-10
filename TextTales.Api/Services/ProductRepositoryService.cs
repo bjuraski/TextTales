@@ -93,4 +93,26 @@ public class ProductRepositoryService : IProductRepositoryService
 
         return product;
     }
+
+    public async Task<bool> ValidateProductTitle(long? id, string title)
+    {
+        await using var dbContext = _dbContextFactory.CreateDbContext();
+
+        var titleExists = await dbContext
+            .Products
+            .AnyAsync(p => (!id.HasValue || p.Id != id) && p.Title.ToLower() == title.ToLower());
+
+        return !titleExists;
+    }
+
+    public async Task<bool> ValidateProductISBN(long? id, string bookNumber)
+    {
+        await using var dbContext = _dbContextFactory.CreateDbContext();
+
+        var bookNumberExists = await dbContext
+            .Products
+            .AnyAsync(p => (!id.HasValue || p.Id != id) && p.InternationalStandardBookNumber.ToLower() == bookNumber.ToLower());
+
+        return !bookNumberExists;
+    }
 }

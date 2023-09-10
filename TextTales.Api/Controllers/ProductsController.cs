@@ -119,4 +119,44 @@ public class ProductsController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, $"Error occured while deleting product record from database: {ex.Message}");
         }
     }
+
+    [HttpGet("validate-title")]
+    public async Task<ActionResult<bool>> ValidateProductTitle([FromQuery] long? id, [FromQuery] string? title)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(title))
+            {
+                return Ok(true);
+            }
+
+            var isTitleValid = await _productRepositoryService.ValidateProductTitle(id, title);
+
+            return Ok(isTitleValid);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, $"Error occurred while validating product title: {ex.Message}");
+        }
+    }
+
+    [HttpGet("validate-international-standard-book-number")]
+    public async Task<ActionResult<bool>> ValidateProductISBN([FromQuery] long? id, [FromQuery(Name = "international-standard-book-number")] string? bookNumber)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(bookNumber))
+            {
+                return Ok(true);
+            }
+
+            var isISBNValid = await _productRepositoryService.ValidateProductISBN(id, bookNumber);
+
+            return Ok(isISBNValid);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, $"Error occurred while validating product ISBN: {ex.Message}");
+        }
+    }
 }

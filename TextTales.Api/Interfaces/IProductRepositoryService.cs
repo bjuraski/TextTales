@@ -13,4 +13,8 @@ public interface IProductRepositoryService
     Task<Product?> UpdateProductAsync(Product product);
 
     Task<Product?> DeleteProductAsync(long id);
+
+    Task<bool> ValidateProductTitle(long? id, string title);
+
+    Task<bool> ValidateProductISBN(long? id, string bookNumber);
 }

@@ -1,0 +1,123 @@
+﻿@using System.Globalization;
+@using TextTales.Models;
+@using TextTales.Web.Interfaces;
+
+@attribute [Route(Endpoints.Product.EditUrl)]
+
+@inject IProductService ProductService
+@inject NavigationManager NavigationManager
+@inject NotificationService NotificationService
+
+<PageTitle>Edit Product</PageTitle>
+<RadzenStack AlignItems="AlignItems.Start" Wrap="FlexWrap.Wrap">
+    <h2>
+        <span class="oi oi-list-rich" aria-hidden="true"></span> Edit Product
+    </h2>
+</RadzenStack>
+
+<RadzenTemplateForm TItem="Product" Data="Model" Submit="SubmitHandler">
+    <RadzenCard class="my-2">
+        <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Start" Wrap="FlexWrap.Wrap">
+            <div class="form-group mb-3 w-50">
+                <RadzenLabel Text="Title" />
+                <RadzenTextBox Name="Title" @bind-Value="Model.Title" class="form-control" />
+                <RadzenRequiredValidator Component="Title" Text="The Title field is required." Style="position: absolute; font-weight: bold;" />
+                <RadzenCustomValidator Component="Title" Validator="() => ProductService.ValidateField(Model.Id, Model.Title, nameof(Model.Title))"
+                                       Text="The Title field already exists." Style="position: absolute; font-weight: bold;" />
+            </div>
+            <div class="form-group mb-3 w-50">
+                <RadzenLabel Text="Author" />
+                <RadzenTextBox Name="Author" @bind-Value="Model.Author" class="form-control" />
+                <RadzenRequiredValidator Component="Author" Text="The Author field is required." Style="position: absolute; font-weight: bold;" />
+            </div>
+            <div class="form-group mb-3 w-100">
+                <RadzenLabel Text="Description" />
+                <RadzenHtmlEditor @bind-Value=@Model.Description style="height: 300px;" />
+            </div>
+            <div class="form-group mb-3 w-50">
+                <RadzenLabel Text="ISBN" />
+                <RadzenTextBox Name="InternationalStandardBookNumber" @bind-Value="Model.InternationalStandardBookNumber" class="form-control" />
+                <RadzenRequiredValidator Component="InternationalStandardBookNumber" Text="The ISBN field is required." Style="position: absolute; font-weight: bold;" />
+                <RadzenCustomValidator Component="InternationalStandardBookNumber" Validator="() => ProductService.ValidateField(Model.Id, Model.InternationalStandardBookNumber, nameof(Model.InternationalStandardBookNumber))"
+                                       Text="The ISBN field already exists." Style="position: absolute; font-weight: bold;" />
+            </div>
+            <div class="form-group mb-3 w-50">
+                <RadzenLabel Text="Price" />
+                <RadzenNumeric Name="Price" TValue="decimal" Format="c" @bind-Value="Model.Price" class="form-control" Culture="CultureInfo" />
+                <RadzenNumericRangeValidator Component="Price" Min="1" Max="500" Text="The Price field should be between 1 and 500 €."
+                                             Style="display: block; position: absolute; font-weight: bold;" />
+            </div>
+        </RadzenStack>
+        <div class="mt-3">
+            <RadzenRow JustifyContent="JustifyContent.Start" AlignItems="AlignItems.Center" Gap="2rem">
+                <RadzenButton ButtonType="ButtonType.Submit" Text="Save & Close" Variant="Variant.Filled" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Large" />
+                <RadzenButton ButtonType="ButtonType.Button" Text="Cancel" Click="OnCancelClickHandler" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Large" />
+            </RadzenRow>
+        </div>
+    </RadzenCard>
+    <RadzenAlert Variant="Variant.Filled" AlertStyle="AlertStyle.Danger" Visible="@_isVisible" Text="@_alertText" />
+</RadzenTemplateForm>
+
+@code {
+    [Parameter]
+    public long Id { get; set; }
+    
+    private Product Model { get; set; } = new();
+
+    private CultureInfo CultureInfo { get; set; } = new CultureInfo("fr-FR");
+
+    private bool _isVisible = false;
+
+    private string _alertText = string.Empty;
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var product = await ProductService.GetProduct(Id);
+
+        if (product is not null)
+        {
+            Model = product;
+        }
+        else
+        {
+            NavigationManager.NavigateTo(Endpoints.Product.BaseUrl);
+            NotificationService.Notify(NotificationSeverity.Error, "Error", "Product can't be found!");
+        }
+    }
+
+    private async Task SubmitHandler()
+    {
+        var isUpdated = await ProductService.UpdateProduct(Id, Model!);
+
+        if (!isUpdated)
+        {
+            await DisplayError("Something went wrong! Failed to update product.");
+
+            return;
+        }
+
+        NavigationManager.NavigateTo(Endpoints.Product.BaseUrl);
+        NotificationService.Notify(NotificationSeverity.Success, "Success", "Product updated successfully!");
+    }
+
+    private void OnCancelClickHandler()
+    {
+        NavigationManager.NavigateTo(Endpoints.Product.BaseUrl);
+    }
+
+    private async Task DisplayError(string message)
+    {
+        _isVisible = true;
+        _alertText = message;
+
+        await InvokeAsync(StateHasChanged);
+
+        await Task.Delay(5000);
+
+        _isVisible = false;
+
+        await InvokeAsync(StateHasChanged);
+    }
+}
