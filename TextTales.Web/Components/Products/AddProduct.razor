@@ -38,7 +38,9 @@
             </div>
             <div class="form-group mb-3 w-50">
                 <RadzenLabel Text="Category" />
-                <RadzenDropDown Name="CategoryId" @bind-Value="Model.CategoryId" Data=Categories TextProperty="Name" ValueProperty="Id" Placeholder="Select Product" class="form-control" />
+                <RadzenDropDown Name="CategoryId" @bind-Value="Model.CategoryId" Data=Categories TextProperty="Name" ValueProperty="Id" Placeholder="Select Category" class="form-control" />
+                <RadzenCustomValidator Component="CategoryId" Validator="() => Model.CategoryId != default"
+                                       Text="The Category field is required." Style="display: block; position: absolute; font-weight: bold;" />
             </div>
             <div class="form-group mb-3 w-50">
                 <RadzenLabel Text="ISBN" />
@@ -90,11 +92,6 @@
         await base.OnInitializedAsync();
 
         Categories = await CategoryService.GetCategories();
-
-        if (Categories is not null && Categories.Any())
-        {
-            Model.CategoryId = Categories.Select(c => c.Id).First();
-        }
     }
 
     private async Task SubmitHandler()
