@@ -5,6 +5,7 @@
 @attribute [Route(Endpoints.Product.EditUrl)]
 
 @inject IProductService ProductService
+@inject ICategoryService CategoryService
 @inject NavigationManager NavigationManager
 @inject NotificationService NotificationService
 
@@ -35,6 +36,10 @@
                 <RadzenHtmlEditor @bind-Value=@Model.Description style="height: 300px;" />
             </div>
             <div class="form-group mb-3 w-50">
+                <RadzenLabel Text="Category" />
+                <RadzenDropDown Name="CategoryId" @bind-Value="Model.CategoryId" Data=Categories TextProperty="Name" ValueProperty="Id" Placeholder="Select Product" class="form-control" />
+            </div>
+            <div class="form-group mb-3 w-50">
                 <RadzenLabel Text="ISBN" />
                 <RadzenTextBox Name="InternationalStandardBookNumber" @bind-Value="Model.InternationalStandardBookNumber" class="form-control" />
                 <RadzenRequiredValidator Component="InternationalStandardBookNumber" Text="The ISBN field is required." Style="position: absolute; font-weight: bold;" />
@@ -61,10 +66,12 @@
 @code {
     [Parameter]
     public long Id { get; set; }
-    
+
     private Product Model { get; set; } = new();
 
     private CultureInfo CultureInfo { get; set; } = new CultureInfo("fr-FR");
+
+    private IEnumerable<Category>? Categories { get; set; }
 
     private bool _isVisible = false;
 
@@ -79,6 +86,7 @@
         if (product is not null)
         {
             Model = product;
+            Categories = await CategoryService.GetCategories();
         }
         else
         {

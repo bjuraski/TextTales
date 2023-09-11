@@ -20,6 +20,7 @@ public class ProductRepositoryService : IProductRepositoryService
 
         var products = await dbContext
             .Products
+            .Include(p => p.Category)
             .ToListAsync();
 
         return products;
@@ -54,6 +55,7 @@ public class ProductRepositoryService : IProductRepositoryService
         productToUpdate.Description = product.Description;
         productToUpdate.InternationalStandardBookNumber = product.InternationalStandardBookNumber;
         productToUpdate.Price = product.Price;
+        productToUpdate.CategoryId = product.CategoryId;
 
         dbContext.Products.Update(productToUpdate);
 

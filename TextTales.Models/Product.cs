@@ -25,5 +25,9 @@ public class Product
     [Range(1, 500)]
     public decimal Price { get; set; }
 
+    public long CategoryId { get; set; }
+
+    public Category? Category { get; set; }
+
     public string? Image { get; set; }
 }
