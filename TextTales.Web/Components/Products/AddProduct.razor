@@ -9,6 +9,8 @@
 @inject IWebHostEnvironment WebHostEnvironment
 @inject NavigationManager NavigationManager
 @inject NotificationService NotificationService
+@inject DialogService DialogService
+@inject TooltipService TooltipService
 
 <PageTitle>New Product</PageTitle>
 <RadzenStack AlignItems="AlignItems.Start" Wrap="FlexWrap.Wrap">
@@ -57,7 +59,15 @@
             </div>
             <div class="form-group mb-3 w-50">
                 <RadzenLabel Text="Image" />
-                <InputFile OnChange="LoadImage" accept="image/*" class="form-control" />
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" Wrap="FlexWrap.Wrap" Gap="0">
+                    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Start" Wrap="FlexWrap.Wrap" Style="width: 95%">
+                        <InputFile @ref="_inputFile" OnChange="LoadImage" accept="image/*" class="form-control" />
+                    </RadzenStack>
+                    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.End" JustifyContent="JustifyContent.End" 
+                                 Wrap="FlexWrap.Wrap" Style="width: 5%">
+                        <RadzenButton Click="OnRemoveImageButtonClickHandler" Icon="close" ButtonStyle="ButtonStyle.Danger" MouseEnter="@(args => RemoveImageButtonTooltip(args))" />
+                    </RadzenStack>
+                </RadzenStack>
                 @if (!string.IsNullOrEmpty(Model.Image))
                 {
                     <RadzenImage Path="@Model.Image" class="mt-2 img-thumbnail" />
@@ -84,6 +94,8 @@
     private bool _isVisible = false;
 
     private string _alertText = string.Empty;
+
+    private InputFile? _inputFile;
 
     private IBrowserFile? _file;
 
@@ -158,6 +170,12 @@
 
                 Model.Image = base64Image;
             }
+            else
+            {
+                await DialogService.Alert("Uploaded file is bigger than 10 MB", "Warning", new AlertOptions { CloseDialogOnOverlayClick = true });
+
+                file = null;
+            }
         }
     }
 
@@ -190,4 +208,16 @@
 
         return fileName;
     }
+
+    private void OnRemoveImageButtonClickHandler()
+    {
+        _inputFile = null;
+        _file = null;
+        Model.Image = string.Empty;
+
+        StateHasChanged();
+    }
+
+    private void RemoveImageButtonTooltip(ElementReference elementReference, TooltipOptions? options = null)
+        => TooltipService.Open(elementReference, "Remove image", options);
 }
