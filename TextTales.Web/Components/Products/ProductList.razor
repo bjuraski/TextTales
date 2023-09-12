@@ -88,7 +88,8 @@
 
         if (isDeleted)
         {
-            NavigationManager.NavigateTo(Endpoints.Product.BaseUrl, true);
+            Products = await ProductService.GetProducts();
+
             NotificationService.Notify(NotificationSeverity.Success, "Success", "Product deleted successfully!");
         }
         else

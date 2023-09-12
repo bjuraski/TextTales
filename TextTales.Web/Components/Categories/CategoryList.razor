@@ -80,7 +80,8 @@
 
         if (isDeleted)
         {
-            NavigationManager.NavigateTo(Endpoints.Category.BaseUrl, true);
+            Categories = await CategoryService.GetCategories();
+
             NotificationService.Notify(NotificationSeverity.Success, "Success", "Category deleted successfully!");
         }
         else
