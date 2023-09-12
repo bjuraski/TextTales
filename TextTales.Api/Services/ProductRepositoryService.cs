@@ -56,6 +56,7 @@ public class ProductRepositoryService : IProductRepositoryService
         productToUpdate.InternationalStandardBookNumber = product.InternationalStandardBookNumber;
         productToUpdate.Price = product.Price;
         productToUpdate.CategoryId = product.CategoryId;
+        productToUpdate.Image = product.Image;
 
         dbContext.Products.Update(productToUpdate);
 
