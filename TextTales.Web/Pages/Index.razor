@@ -1,7 +1,58 @@
-﻿@page "/"
+﻿@using System.Globalization;
+@using TextTales.Models;
+@using TextTales.Web.Interfaces;
 
-<PageTitle>Index</PageTitle>
+@page "/"
 
-<h1>Hello, world!</h1>
+@inject IProductService ProductService
 
-Welcome to your new app.
+<PageTitle>Home</PageTitle>
+
+@if (Products is not null && Products.Any())
+{
+    <div class="row pb-3">
+        @foreach (var product in Products)
+        {
+            <div class="col-lg-3 col-sm-6">
+                <RadzenRow class="pb-3">
+                    <RadzenColumn Size="12" class="p-1">
+                        <RadzenCard class="border-0 p-3 shadow border-top border-5 rounded">
+                            <RadzenImage Path="@product.Image" class="card-img-top rounded" />
+                            <div class="card-body pb-0">
+                                <div class="pl-1">
+                                    <p class="card-title h5 text-dark opacity-75 text-uppercase text-center">@product.Title</p>
+                                    <p class="card-title text-primary text-center">by <b>@product.Author</b></p>
+                                </div>
+                                <div class="pl-1 text-center mb-2">
+                                    <RadzenBadge BadgeStyle="BadgeStyle.Danger">
+                                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Style="padding: 0.5rem;">
+                                            <b>@product.Price.ToString("c", CultureInfo.CreateSpecificCulture("fr-FR"))</b>
+                                        </RadzenStack>
+                                    </RadzenBadge>
+                                </div>
+                            </div>
+                            <div>
+                                <RadzenButton Text="Details" ButtonStyle="ButtonStyle.Primary" class="bg-gradient border-0 form-control" />
+                            </div>
+                        </RadzenCard>
+                    </RadzenColumn>
+                </RadzenRow>
+            </div>
+        }
+    </div>
+}
+else
+{
+    // TODO: spinner
+}
+
+@code {
+    private IEnumerable<Product>? Products { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        Products = await ProductService.GetProducts();
+    }
+}
