@@ -48,4 +48,11 @@ public class ProductService : ValidateFieldService, IProductService
 
         return response is not null;
     }
+
+    public async Task<bool> ProductOfCategoryExists(long categoryId)
+    {
+        var response = await _httpClient.GetFromJsonAsync<bool>($"api/products/product-of-category-exists?categoryId={categoryId}");
+
+        return response;
+    }
 }

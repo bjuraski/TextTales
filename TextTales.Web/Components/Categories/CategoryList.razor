@@ -4,6 +4,7 @@
 @attribute [Route(Endpoints.Category.BaseUrl)]
 
 @inject ICategoryService CategoryService
+@inject IProductService ProductService
 @inject NavigationManager NavigationManager
 @inject DialogService DialogService
 @inject NotificationService NotificationService
@@ -32,7 +33,7 @@
                         <RadzenButton Click="() => EditCategoryHandler(category.Id)" Text="Edit" Icon="edit" ButtonStyle="ButtonStyle.Dark" Style="width: 100%" />
                     </RadzenColumn>
                     <RadzenColumn Size="6">
-                        <RadzenButton Click="() => DeleteCategoryHandler(category.Id)" Text="Delete" Icon="delete" ButtonStyle="ButtonStyle.Danger" Style="width: 100%" />
+                        <RadzenButton Click="() => DeleteCategoryHandler(category.Id, category.Name)" Text="Delete" Icon="delete" ButtonStyle="ButtonStyle.Danger" Style="width: 100%" />
                     </RadzenColumn>
                 </RadzenRow>
             </Template>
@@ -64,15 +65,27 @@
         NavigationManager.NavigateTo(Endpoints.Category.SetEditUrl(categoryId));
     }
 
-    private async Task DeleteCategoryHandler(long categoryId)
+    private async Task DeleteCategoryHandler(long categoryId, string categoryName)
     {
         var dialogResult = await DialogService.Confirm(
-            "Do you really want to delete the category?",
+            $"Do you really want to delete {categoryName}?",
             "Delete Category",
-            new ConfirmOptions { OkButtonText = "Yes", CancelButtonText = "No", ShowClose = false });
+            new ConfirmOptions { OkButtonText = "Yes", CancelButtonText = "No", ShowClose = false, CloseDialogOnEsc = true });
 
         if (dialogResult.HasValue && dialogResult.Value == false)
         {
+            return;
+        }
+
+        var productOfCategoryExists = await ProductService.ProductOfCategoryExists(categoryId);
+
+        if (productOfCategoryExists)
+        {
+            await DialogService.Alert(
+                $"Category {categoryName} can't be deleted, since it's already assigned to some products!", 
+                "Warning!", 
+                new AlertOptions { OkButtonText = "Ok", CloseDialogOnEsc = true, ShowClose = false });
+
             return;
         }
 

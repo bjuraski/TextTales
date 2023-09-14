@@ -97,6 +97,18 @@ public class ProductRepositoryService : IProductRepositoryService
         return product;
     }
 
+    public async Task<bool> ProductOfCategoryExists(long categoryId)
+    {
+        await using var dbContext = _dbContextFactory.CreateDbContext();
+
+        var productOfCategoryExists = await dbContext
+            .Products
+            .Where(p => p.CategoryId == categoryId)
+            .AnyAsync();
+
+        return productOfCategoryExists;
+    }
+
     public async Task<bool> ValidateProductTitle(long? id, string title)
     {
         await using var dbContext = _dbContextFactory.CreateDbContext();

@@ -8,67 +8,12 @@
 @inject ICategoryService CategoryService
 @inject NavigationManager NavigationManager
 @inject NotificationService NotificationService
-@inject IWebHostEnvironment WebHostEnvironment
 
-<PageTitle>Edit Product</PageTitle>
-<RadzenStack AlignItems="AlignItems.Start" Wrap="FlexWrap.Wrap">
-    <h2>
-        <span class="oi oi-list-rich" aria-hidden="true"></span> Edit Product
-    </h2>
-</RadzenStack>
-
-<RadzenTemplateForm TItem="Product" Data="Model" Submit="SubmitHandler">
-    <RadzenCard class="my-2">
-        <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Start" Wrap="FlexWrap.Wrap">
-            <div class="form-group mb-3 w-50">
-                <RadzenLabel Text="Title" />
-                <RadzenTextBox Name="Title" @bind-Value="Model.Title" class="form-control" />
-                <RadzenRequiredValidator Component="Title" Text="The Title field is required." Style="position: absolute; font-weight: bold;" />
-                <RadzenCustomValidator Component="Title" Validator="() => ProductService.ValidateField(Model.Id, Model.Title, nameof(Model.Title))"
-                                       Text="The Title field already exists." Style="position: absolute; font-weight: bold;" />
-            </div>
-            <div class="form-group mb-3 w-50">
-                <RadzenLabel Text="Author" />
-                <RadzenTextBox Name="Author" @bind-Value="Model.Author" class="form-control" />
-                <RadzenRequiredValidator Component="Author" Text="The Author field is required." Style="position: absolute; font-weight: bold;" />
-            </div>
-            <div class="form-group mb-3 w-100">
-                <RadzenLabel Text="Description" />
-                <RadzenHtmlEditor @bind-Value=@Model.Description style="height: 300px;" />
-            </div>
-            <div class="form-group mb-3 w-50">
-                <RadzenLabel Text="Category" />
-                <RadzenDropDown Name="CategoryId" @bind-Value="Model.CategoryId" Data=Categories TextProperty="Name" ValueProperty="Id" Placeholder="Select Category" class="form-control" />
-                <RadzenCustomValidator Component="CategoryId" Validator="() => Model.CategoryId != default"
-                                       Text="The Category field is required." Style="display: block; position: absolute; font-weight: bold;" />
-            </div>
-            <div class="form-group mb-3 w-50">
-                <RadzenLabel Text="ISBN" />
-                <RadzenTextBox Name="InternationalStandardBookNumber" @bind-Value="Model.InternationalStandardBookNumber" class="form-control" />
-                <RadzenRequiredValidator Component="InternationalStandardBookNumber" Text="The ISBN field is required." Style="position: absolute; font-weight: bold;" />
-                <RadzenCustomValidator Component="InternationalStandardBookNumber" Validator="() => ProductService.ValidateField(Model.Id, Model.InternationalStandardBookNumber, nameof(Model.InternationalStandardBookNumber))"
-                                       Text="The ISBN field already exists." Style="position: absolute; font-weight: bold;" />
-            </div>
-            <div class="form-group mb-3 w-50">
-                <RadzenLabel Text="Price" />
-                <RadzenNumeric Name="Price" TValue="decimal" Format="c" @bind-Value="Model.Price" class="form-control" Culture="CultureInfo" />
-                <RadzenNumericRangeValidator Component="Price" Min="1" Max="500" Text="The Price field should be between 1 and 500 €."
-                                             Style="display: block; position: absolute; font-weight: bold;" />
-            </div>
-            <div class="form-group mb-3 w-50">
-                <RadzenLabel Text="Image" />
-                <RadzenFileInput @bind-Value="Model.Image" @bind-FileName="_fileName" @bind-FileSize="_fileSize" TValue="string" class="w-100" />
-            </div>
-        </RadzenStack>
-        <div class="mt-3">
-            <RadzenRow JustifyContent="JustifyContent.Start" AlignItems="AlignItems.Center" Gap="2rem">
-                <RadzenButton ButtonType="ButtonType.Submit" Text="Save & Close" Variant="Variant.Filled" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Large" />
-                <RadzenButton ButtonType="ButtonType.Button" Text="Cancel" Click="OnCancelClickHandler" Variant="Variant.Outlined" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Large" />
-            </RadzenRow>
-        </div>
-    </RadzenCard>
-    <RadzenAlert Variant="Variant.Filled" AlertStyle="AlertStyle.Danger" Visible="@_isVisible" Text="@_alertText" />
-</RadzenTemplateForm>
+<ProductComponent Id="@Id" Model="@Model" Categories="@Categories" SubmitHandler="@SubmitHandler" IsEdit="true">
+    <AlertFragmentContent>
+        <RadzenAlert Variant="Variant.Filled" AlertStyle="AlertStyle.Danger" Visible="@_isVisible" Text="@_alertText" />
+    </AlertFragmentContent>
+</ProductComponent>
 
 @code {
     [Parameter]
@@ -76,17 +21,11 @@
 
     private Product Model { get; set; } = new();
 
-    private CultureInfo CultureInfo { get; set; } = new CultureInfo("fr-FR");
-
     private IEnumerable<Category>? Categories { get; set; }
 
     private bool _isVisible = false;
 
     private string _alertText = string.Empty;
-
-    private string? _fileName;
-
-    private long? _fileSize;
 
     protected async override Task OnInitializedAsync()
     {

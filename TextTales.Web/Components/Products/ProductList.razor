@@ -40,7 +40,7 @@
                         <RadzenButton Click="() => EditProductHandler(product.Id)" Text="Edit" Icon="edit" ButtonStyle="ButtonStyle.Dark" Style="width: 100%" />
                     </RadzenColumn>
                     <RadzenColumn Size="6">
-                        <RadzenButton Click="() => DeleteProductHandler(product.Id)" Text="Delete" Icon="delete" ButtonStyle="ButtonStyle.Danger" Style="width: 100%" />
+                        <RadzenButton Click="() => DeleteProductHandler(product.Id, product.Title)" Text="Delete" Icon="delete" ButtonStyle="ButtonStyle.Danger" Style="width: 100%" />
                     </RadzenColumn>
                 </RadzenRow>
             </Template>
@@ -72,10 +72,10 @@
         NavigationManager.NavigateTo(Endpoints.Product.SetEditUrl(productId));
     }
 
-    private async Task DeleteProductHandler(long productId)
+    private async Task DeleteProductHandler(long productId, string productTitle)
     {
         var dialogResult = await DialogService.Confirm(
-            "Do you really want to delete the product?",
+            $"Do you really want to delete {productTitle}?",
             "Delete Product",
             new ConfirmOptions { OkButtonText = "Yes", CancelButtonText = "No", ShowClose = false });
 

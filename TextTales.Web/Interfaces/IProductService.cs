@@ -13,4 +13,6 @@ public interface IProductService : IValidateFieldService
     Task<bool> UpdateProduct(long id, Product product);
 
     Task<bool> DeleteProduct(long id);
+
+    Task<bool> ProductOfCategoryExists(long categoryId);
 }

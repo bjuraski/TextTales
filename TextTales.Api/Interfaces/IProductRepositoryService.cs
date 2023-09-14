@@ -14,6 +14,8 @@ public interface IProductRepositoryService
 
     Task<Product?> DeleteProductAsync(long id);
 
+    Task<bool> ProductOfCategoryExists(long categoryId);
+
     Task<bool> ValidateProductTitle(long? id, string title);
 
     Task<bool> ValidateProductISBN(long? id, string bookNumber);

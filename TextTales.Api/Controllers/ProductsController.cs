@@ -159,4 +159,19 @@ public class ProductsController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, $"Error occurred while validating product ISBN: {ex.Message}");
         }
     }
+
+    [HttpGet("product-of-category-exists")]
+    public async Task<ActionResult<bool>> ProductOfCategoryExists([FromQuery(Name = "categoryId")] long categoryId)
+    {
+        try
+        {
+            var productOfCategoryExists = await _productRepositoryService.ProductOfCategoryExists(categoryId);
+
+            return Ok(productOfCategoryExists);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, $"Error occurred while validating product category existance: {ex.Message}");
+        }
+    }
 }
