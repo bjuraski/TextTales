@@ -1,9 +1,6 @@
 ﻿@using TextTales.Models;
 @using TextTales.Web.Interfaces;
 
-@inject ICategoryService CategoryService
-@inject NavigationManager NavigationManager
-
 <PageTitle>@_title</PageTitle>
 <RadzenStack AlignItems="AlignItems.Start" Wrap="FlexWrap.Wrap">
     <h2>
@@ -40,35 +37,3 @@
     </RadzenCard>
     @AlertFragmentContent
 </RadzenTemplateForm>
-
-
-@code {
-    [Parameter]
-    public long? Id { get; set; }
-
-    [Parameter]
-    public Category Model { get; set; } = new();
-
-    [Parameter]
-    public bool IsEdit { get; set; } = false;
-
-    [Parameter]
-    public required Func<Task> SubmitHandler { get; set; }
-
-    [Parameter]
-    public RenderFragment? AlertFragmentContent { get; set; }
-
-    private string _title = string.Empty;
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-
-        _title = $"{(IsEdit ? "Edit" : "New")} Category";
-    }
-
-    private void OnCancelClickHandler()
-    {
-        NavigationManager.NavigateTo(Endpoints.Category.BaseUrl);
-    }
-}

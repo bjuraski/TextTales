@@ -2,9 +2,6 @@
 @using TextTales.Models;
 @using TextTales.Web.Interfaces;
 
-@inject IProductService ProductService
-@inject NavigationManager NavigationManager
-
 <PageTitle>@_title</PageTitle>
 <RadzenStack AlignItems="AlignItems.Start" Wrap="FlexWrap.Wrap">
     <h2>
@@ -64,43 +61,3 @@
     </RadzenCard>
     @AlertFragmentContent
 </RadzenTemplateForm>
-
-@code {
-    [Parameter]
-    public long? Id { get; set; }
-
-    [Parameter]
-    public Product Model { get; set; } = new();
-
-    [Parameter]
-    public IEnumerable<Category>? Categories { get; set; }
-
-    [Parameter]
-    public bool IsEdit { get; set; } = false;
-
-    [Parameter]
-    public required Func<Task> SubmitHandler { get; set; }
-
-    [Parameter]
-    public RenderFragment? AlertFragmentContent { get; set; }
-
-    private string _title = string.Empty;
-
-    private CultureInfo CultureInfo { get; set; } = new CultureInfo("fr-FR");
-
-    private string? _fileName;
-
-    private long? _fileSize;
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-
-        _title = $"{(IsEdit ? "Edit" : "New")} Product";
-    }
-
-    private void OnCancelClickHandler()
-    {
-        NavigationManager.NavigateTo(Endpoints.Product.BaseUrl);
-    }
-}
