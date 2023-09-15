@@ -1,8 +1,15 @@
+using Microsoft.EntityFrameworkCore;
 using Radzen;
+using TextTales.Web.Areas.Identity.Data;
+using TextTales.Web.Data;
 using TextTales.Web.Interfaces;
 using TextTales.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("TextTalesConnection") ?? throw new InvalidOperationException("Connection string 'TextTalesConnection' not found.");
+
+builder.Services.AddDbContext<TextTalesDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<TextTalesDbContext>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
