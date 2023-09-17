@@ -1,8 +1,42 @@
-﻿<RadzenHeader>
-    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="2">
-        <RadzenSidebarToggle Click="@ToggleNavMenu" />
-        <RadzenLabel Text="TextTales" />
-    </RadzenStack>
+﻿@using Microsoft.AspNetCore.Identity;
+@using System.Security.Claims;
+@using TextTales.Web.Areas.Identity.Data;
+
+@inject NavigationManager NavigationManager
+@inject UserManager<ApplicationUser> UserManager
+
+<RadzenHeader>
+    <RadzenRow AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start" Gap="0">
+        <RadzenColumn Size="5">
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
+                <RadzenSidebarToggle Click="@ToggleNavMenu" />
+                <RadzenLabel Text="TextTales" />
+            </RadzenStack>
+        </RadzenColumn>
+        <RadzenColumn Size="7">
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End">
+                @if (!_isAuthenticated)
+                {
+                    <NavLink class="nav-link" href="/identity/account/login" Match="NavLinkMatch.All">
+                        <RadzenButton Variant="Variant.Text" Text="Login" ButtonStyle="ButtonStyle.Primary" />
+                    </NavLink>
+                }
+                else
+                {
+                    @if (!string.IsNullOrEmpty(_userName))
+                    {
+                        <NavLink class="nav-link" href="/identity/account/manage/index" Match="NavLinkMatch.All">
+                            <RadzenButton Variant="Variant.Text" Text="@_userName" ButtonStyle="ButtonStyle.Primary" />
+                        </NavLink>
+                    }
+                    <NavLink class="nav-link" href="/identity/account/logout" Match="NavLinkMatch.All">
+                        <RadzenButton Variant="Variant.Text" Text="Logout" ButtonStyle="ButtonStyle.Primary" />
+                    </NavLink>
+                }
+            </RadzenStack>
+        </RadzenColumn>
+
+    </RadzenRow>
 </RadzenHeader>
 <RadzenSidebar @bind-Expanded="@sidebarExpanded">
     <RadzenPanelMenu>
@@ -16,10 +50,36 @@
 </RadzenSidebar>
 
 @code {
+    [CascadingParameter]
+    public Task<AuthenticationState>? AuthenticationStateTask { get; set; }
+
     private bool sidebarExpanded = true;
+
+    private bool _isAuthenticated;
+
+    private string? _userName;
 
     private void ToggleNavMenu()
     {
         sidebarExpanded = !sidebarExpanded;
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        if (AuthenticationStateTask is null)
+        {
+            return;
+        }
+
+        var authState = await AuthenticationStateTask;
+        var user = authState.User;
+
+        if (user is not null && user.Identity is not null)
+        {
+            _isAuthenticated = user.Identity.IsAuthenticated;
+            _userName = UserManager.GetUserName(user);
+        }
     }
 }
