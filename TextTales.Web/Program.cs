@@ -8,10 +8,15 @@ using TextTales.Web.Interfaces;
 using TextTales.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("TextTalesConnection") ?? throw new InvalidOperationException("Connection string 'TextTalesConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("TextTalesConnection")
+    ?? throw new InvalidOperationException("Connection string 'TextTalesConnection' not found.");
 
 builder.Services.AddDbContext<TextTalesDbContext>(options => options.UseSqlServer(connectionString));
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<TextTalesDbContext>().AddDefaultTokenProviders();
+builder.Services
+    .AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<TextTalesDbContext>()
+    .AddDefaultTokenProviders();
 builder.Services.AddAuthentication("Identity.Application").AddCookie();
 builder.Services.Configure<IdentityOptions>(options =>
 {
