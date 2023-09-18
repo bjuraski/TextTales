@@ -41,11 +41,14 @@
 <RadzenSidebar @bind-Expanded="@sidebarExpanded">
     <RadzenPanelMenu>
         <RadzenPanelMenuItem Text="Home" Icon="home" Path="/" />
-        <RadzenPanelMenuItem Text="Users" Icon="account_box" />
-        <RadzenPanelMenuItem Text="Content Management" Icon="grid_view">
-            <RadzenPanelMenuItem Text="Categories" Icon="category" Path="@(Endpoints.Category.BaseUrl)" />
-            <RadzenPanelMenuItem Text="Products" Icon="add_shopping_cart" Path="@(Endpoints.Product.BaseUrl)" />
-        </RadzenPanelMenuItem>
+        @if (_isAdmin)
+        {
+            <RadzenPanelMenuItem Text="Users" Icon="account_box" />
+            <RadzenPanelMenuItem Text="Content Management" Icon="grid_view">
+                <RadzenPanelMenuItem Text="Categories" Icon="category" Path="@(Endpoints.Category.BaseUrl)" />
+                <RadzenPanelMenuItem Text="Products" Icon="add_shopping_cart" Path="@(Endpoints.Product.BaseUrl)" />
+            </RadzenPanelMenuItem>
+        }
     </RadzenPanelMenu>
 </RadzenSidebar>
 
@@ -56,6 +59,8 @@
     private bool sidebarExpanded = true;
 
     private bool _isAuthenticated;
+
+    private bool _isAdmin;
 
     private string? _userName;
 
@@ -78,6 +83,14 @@
 
         if (user is not null && user.Identity is not null)
         {
+            _isAdmin = user.IsInRole(Roles.RoleAdmin);
+            // var claimsIdentity = (ClaimsIdentity)user.Identity;
+
+            // if (claimsIdentity is not null)
+            // {
+            //     var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            // }
+
             _isAuthenticated = user.Identity.IsAuthenticated;
             _userName = UserManager.GetUserName(user);
         }

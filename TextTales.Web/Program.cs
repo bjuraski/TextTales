@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Radzen;
 using TextTales.Web.Areas.Identity.Data;
@@ -10,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("TextTalesConnection") ?? throw new InvalidOperationException("Connection string 'TextTalesConnection' not found.");
 
 builder.Services.AddDbContext<TextTalesDbContext>(options => options.UseSqlServer(connectionString));
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<TextTalesDbContext>();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<TextTalesDbContext>().AddDefaultTokenProviders();
 builder.Services.AddAuthentication("Identity.Application").AddCookie();
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -68,6 +69,8 @@ builder.Services.AddHttpClient<IValidateFieldService, ValidateFieldService>(clie
 {
     client.BaseAddress = new Uri("https://localhost:7065/");
 });
+
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 

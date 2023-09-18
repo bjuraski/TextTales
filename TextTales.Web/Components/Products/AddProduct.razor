@@ -3,6 +3,7 @@
 @using TextTales.Web.Interfaces;
 
 @attribute [Route(Endpoints.Product.AddUrl)]
+@attribute [Authorize(Roles = Roles.RoleAdmin)]
 
 <ProductComponent Model="@Model" Categories="@Categories" SubmitHandler="@SubmitHandler">
     <AlertFragmentContent>

@@ -3,6 +3,7 @@
 @using TextTales.Web.Interfaces;
 
 @attribute [Route(Endpoints.Product.BaseUrl)]
+@attribute [Authorize(Roles = Roles.RoleAdmin)]
 
 <PageTitle>Products</PageTitle>
 <RadzenRow>

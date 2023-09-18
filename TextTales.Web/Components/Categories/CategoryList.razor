@@ -2,6 +2,7 @@
 @using TextTales.Web.Interfaces;
 
 @attribute [Route(Endpoints.Category.BaseUrl)]
+@attribute [Authorize(Roles = Roles.RoleAdmin)]
 
 <PageTitle>Categories</PageTitle>
 <RadzenRow>

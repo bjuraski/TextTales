@@ -2,6 +2,7 @@
 @using TextTales.Web.Interfaces;
 
 @attribute [Route(Endpoints.Category.EditUrl)]
+@attribute [Authorize(Roles = Roles.RoleAdmin)]
 
 <CategoryComponent Id="@Id" Model="@Model" SubmitHandler="@SubmitHandler" IsEdit="true">
     <AlertFragmentContent>
