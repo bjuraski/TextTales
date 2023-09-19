@@ -17,21 +17,15 @@
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End">
                 @if (!_isAuthenticated)
                 {
-                    <NavLink class="nav-link" href="/identity/account/login" Match="NavLinkMatch.All">
-                        <RadzenButton Variant="Variant.Text" Text="Login" ButtonStyle="ButtonStyle.Primary" />
-                    </NavLink>
+                    <RadzenButton Variant="Variant.Text" Click="LoginRedirectHandler" Text="Login" ButtonStyle="ButtonStyle.Primary" />
                 }
                 else
                 {
                     @if (!string.IsNullOrEmpty(_userName))
                     {
-                        <NavLink class="nav-link" href="/identity/account/manage/index" Match="NavLinkMatch.All">
-                            <RadzenButton Variant="Variant.Text" Text="@_userName" ButtonStyle="ButtonStyle.Primary" />
-                        </NavLink>
+                        <RadzenButton Variant="Variant.Text" Click="ManageAccountRedirectHandler" Text="@_userName" ButtonStyle="ButtonStyle.Primary" />
                     }
-                    <NavLink class="nav-link" href="/identity/account/logout" Match="NavLinkMatch.All">
-                        <RadzenButton Variant="Variant.Text" Text="Logout" ButtonStyle="ButtonStyle.Primary" />
-                    </NavLink>
+                    <RadzenButton Variant="Variant.Text" Click="LogoutRedirectHandler" Text="Logout" ButtonStyle="ButtonStyle.Primary" />
                 }
             </RadzenStack>
         </RadzenColumn>
@@ -64,11 +58,6 @@
 
     private string? _userName;
 
-    private void ToggleNavMenu()
-    {
-        sidebarExpanded = !sidebarExpanded;
-    }
-
     protected async override Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -94,5 +83,26 @@
             _isAuthenticated = user.Identity.IsAuthenticated;
             _userName = UserManager.GetUserName(user);
         }
+    }
+
+    private void ToggleNavMenu()
+    {
+        sidebarExpanded = !sidebarExpanded;
+    }
+
+    private void LoginRedirectHandler()
+    {
+        NavigationManager.NavigateTo(Endpoints.Access.Login, true);
+    }
+
+    private void ManageAccountRedirectHandler()
+    {
+        NavigationManager.NavigateTo(Endpoints.Access.ManageAccount, true);
+    }
+
+    private void LogoutRedirectHandler()
+    {
+        NavigationManager.NavigateTo(Endpoints.Access.Logout
+            , true);
     }
 }
